@@ -23,7 +23,7 @@ locals {
   )
   region      = get_env("AWS_REGION", local.default_region)
   account_id  = get_env("ACCOUNT_ID", get_aws_account_id())
-  bucket_name = "terraform-${local.account_id}"
+  bucket_name = "terraform-${local.account_id}-${local.region}"
 }
 
 remote_state {
