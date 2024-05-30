@@ -17,5 +17,8 @@ resource "aws_instance" "my_instance" {
     })
   }
   user_data = file("ec2-user-data.sh")
-  tags      = local.tags
+  vpc_security_group_ids = [
+    aws_security_group.ec2_security_group.id
+  ]
+  tags = local.tags
 }
