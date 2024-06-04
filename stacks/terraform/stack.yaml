@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates the resources needed to store Terraform states.
+
+Resources:
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "terraform-states-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'aws:kms'
+      VersioningConfiguration:
+        Status: Enabled
+
+  TerraformStateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref TerraformStateBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: EnforcedTLS
+          Effect: Deny
+          Principal: "*"
+          Action: s3:*
+          Resource:
+            - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}"
+            - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}/*"
+          Condition:
+            Bool:
+              aws:SecureTransport: 'false'
+        - Sid: RootAccess
+          Effect: Allow
+          Principal:
+            AWS: arn:aws:iam::992382689618:root
+          Action: s3:*
+          Resource:
+            - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}"
+            - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}/*"
