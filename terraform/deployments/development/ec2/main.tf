@@ -8,6 +8,7 @@ resource "aws_instance" "my_instance" {
   ami           = data.aws_ami.ami_amazon_linux_2_ami_hvm.id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.developer.key_name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profie.name
   root_block_device {
     volume_size           = 8
     volume_type           = "gp2"
