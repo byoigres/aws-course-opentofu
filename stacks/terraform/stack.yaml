@@ -1,6 +1,11 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Creates the resources needed to store Terraform states.
 
+Parameters:
+  Environment:
+    Type: String
+  Stage:
+    Type: String
 Resources:
   TerraformStateBucket:
     Type: AWS::S3::Bucket
@@ -17,6 +22,17 @@ Resources:
               SSEAlgorithm: 'aws:kms'
       VersioningConfiguration:
         Status: Enabled
+      Tags:
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: Region
+          Value: !Ref AWS::Region
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Stage
+          Value: !Ref Stage
+        - Key: StackName
+          Value: !Ref AWS::StackName
 
   TerraformStateBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -43,7 +59,7 @@ Resources:
           Resource:
             - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}"
             - !Sub "arn:${AWS::Partition}:s3:::terraform-states-${AWS::AccountId}-${AWS::Region}/*"
-  TarraformDynamoTable:
+  TerraformDynamoTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
@@ -58,3 +74,14 @@ Resources:
           KeyType: HASH
       SSESpecification:
         SSEEnabled: true
+      Tags:
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: Region
+          Value: !Ref AWS::Region
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Stage
+          Value: !Ref Stage
+        - Key: StackName
+          Value: !Ref AWS::StackName

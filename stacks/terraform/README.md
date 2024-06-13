@@ -9,18 +9,17 @@ aws cloudformation validate-template --template-body file://stack.yaml
 ## Create Stack
 
 ```sh
-aws cloudformation create-stack --stack-name terraform-infra --template-body file://stack.yaml
+aws cloudformation create-stack --stack-name terraform-infra --template-body file://stack.yaml --parameters file://parameters/development.json
 ```
 
 ## Update Stack
 
 ```sh
-aws cloudformation update-stack --stack-name terraform-infra --template-body file://stack.yaml  
+aws cloudformation update-stack --stack-name terraform-infra --template-body file://stack.yaml --parameters file://parameters/development.json
 ```
 
-## Update Stack
+## Delete Stack
 
 ```sh
 aws cloudformation delete-stack --stack-name terraform-infra
 ```
-
