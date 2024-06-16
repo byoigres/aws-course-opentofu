@@ -9,3 +9,26 @@ resource "aws_lightsail_instance" "instance" {
   tags              = local.tags
   depends_on        = [aws_lightsail_key_pair.key_pair]
 }
+
+resource "aws_lightsail_instance_public_ports" "instance_ports" {
+  instance_name = aws_lightsail_instance.instance.name
+
+  port_info {
+    protocol  = "tcp"
+    from_port = 22
+    to_port   = 22
+  }
+
+  port_info {
+    protocol  = "tcp"
+    from_port = 80
+    to_port   = 80
+  }
+
+  port_info {
+    protocol  = "tcp"
+    from_port = 8000
+    to_port   = 8000
+  }
+}
+
